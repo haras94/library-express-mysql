@@ -3,7 +3,7 @@ const connection = require('../configs/db');
 module.exports = {
     getUsers: () => {
         return new Promise((resolve, reject) => {
-            connection.query("SELECT * FROM users", (err, result) => {
+            connection.query("SELECT email, fullname, password FROM users", (err, result) => {
                 if (!err) {
                     resolve(result)
 
@@ -24,13 +24,24 @@ module.exports = {
             })
         })
     },
-    insertUsers: (data) => {
+    register: (data) => {
         return new Promise((resolve, reject) => {
             connection.query("INSERT INTO users SET ?", data, (err, result) => {
                 if (!err) {
                     resolve(result)
                 } else {
                     reject(new Error(err))
+                }
+            })
+        })
+    },
+    login: (email) => {
+        return new Promise((resolve, reject) => {
+            connection.query("SELECT * FROM users WHERE email = ?",email,  (err, result) => {
+                if (!err) {
+                    resolve(result);
+                } else {
+                    reject(new Error(err));
                 }
             })
         })
