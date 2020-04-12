@@ -2,7 +2,7 @@ const express = require('express');
 const Router = express.Router();
 const bookController = require('../controller/book');
 const cors = require('cors');
-const redisHelper = require('../helpers/redis');
+// const redisHelper = require('../helpers/redis');
 
 // multer
 const multer = require('multer');
@@ -19,16 +19,16 @@ const upload = multer({
 })
 
 Router
-  // .get('/', bookController.getBooks)
-  // .get('/:id_book', bookController.bookDetail)
-  // .post('/', bookController.insertBook)
-  // .patch('/:id_book', bookController.updateBook)
-  // .delete('/:id_book', bookController.deleteBook)
-
-  .get('/', redisHelper.cacheGetAllBooks, bookController.getBooks)
+  .get('/', bookController.getBooks)
   .get('/:id_book', bookController.bookDetail)
-  .post('/', upload.single('image'), redisHelper.clearGetAllBooks, bookController.insertBook)
-  .patch('/:id_book', redisHelper.clearGetAllBooks, bookController.updateBook)
-  .delete('/:id_book', redisHelper.clearGetAllBooks, bookController.deleteBook)
+  .post('/', bookController.insertBook)
+  .patch('/:id_book', bookController.updateBook)
+  .delete('/:id_book', bookController.deleteBook)
+
+  // .get('/', redisHelper.cacheGetAllBooks, bookController.getBooks)
+  // .get('/:id_book', bookController.bookDetail)
+  // .post('/', upload.single('image'), redisHelper.clearGetAllBooks, bookController.insertBook)
+  // .patch('/:id_book', redisHelper.clearGetAllBooks, bookController.updateBook)
+  // .delete('/:id_book', redisHelper.clearGetAllBooks, bookController.deleteBook)
 
 module.exports = Router;

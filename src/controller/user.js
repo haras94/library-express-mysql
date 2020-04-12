@@ -15,16 +15,22 @@ module.exports = {
     }
     userModel.login(data.email)
     .then((result) => {
+        const token = jwt.sign({id: result[0].id, email: result[0].email}, process.env.SECRET_KEY);
         const checkPass = compareSync(data.password, result[0].password)
         console.log(checkPass)
-        if (checkPass) {
-            MiscHelper.response(res, result, 200, 'Login Successfully!');
+        if (checkPass === false) {
+            MiscHelper.response(res, null, 202, 'Invalid Password!');
         } else {
-            MiscHelper.response(res, null, 400, 'Invalid Password!');
+            return res.json({
+            success: 1,
+            message: 'Login Success',
+            result: result[0],
+            token: token,
+            })
         }
     })
     .catch(err => {
-        MiscHelper.response(res, null, 400, 'Invalid Email');
+        MiscHelper.response(res, err, 202, 'Invalid Email');
     })
   },
   register: (req, res) => {
@@ -37,6 +43,7 @@ module.exports = {
         email,
         fullname,
         password,
+        photo: 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png',
         status: 0,
         role_id: 2,
       }
@@ -44,10 +51,50 @@ module.exports = {
       data.password = hashSync(data.password, salt)
       userModel.register(data)
         .then((result) => {
-          res.send(result);
-        })
-        .catch(err => console.log(err));
-        },
+          console.log(result);
+
+          result.email = data.email
+                const newresult = result;
+                const token = jwt.sign({id: result.insertId ,email: result.email}, process.env.SECRET_KEY)
+                newresult.token = token
+                const transporter = nodemailer.createTransport({
+                    service: 'gmail',
+                    auth: {
+                        user: 'harunastrade@gmail.com',
+                        pass: '94321290ha',
+                    }
+                });
+                const mailFrom = {
+                    from: 'harunastrade@gmail.com',
+                    to: 'pbharun59@gmail.com',
+                    subject: 'verify your account',
+                    html: '<p>Click <a href="http://localhost:8080/#/auth?activated=' + token+'">here</a></p>',
+                };
+                transporter.sendMail(mailFrom, (err, info) => {
+                    if (err) {
+                        console.log(err)
+                        res.send('Email Activation Failed!')
+                    } else {
+                        const result = {
+                            token: tokenactivate,
+                            status: 'succes'
+                        };
+                        MiscHelper.response(res,result,200)
+                    }
+                })
+                MiscHelper.response(res, newresult, 200, 'Register Succes, Please Check Your Email')
+            })
+            .catch(err => {
+                MiscHelper.response(res, err, 201, 'Register Failed!')
+            })
+    },
+
+        // })
+        // .catch(err => console.log(err));
+        // },
+}
+
+
     // aktivasiuser: (req, res) => {
     //   const mailOptions = {
     //     from: '',
@@ -55,7 +102,7 @@ module.exports = {
     //     subject: subject,
     //     text: 'That was easy!1'
     // }
-}
+
 
 // module.exports = {
 //     getUsers: (req, res) => {

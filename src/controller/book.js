@@ -1,8 +1,8 @@
 const bookModel = require('../models/book');
 const MiscHelper = require('../helpers/helpers')
 require('dotenv').config()
-const redis = require('redis');
-const client = redis.createClient(process.env.PORT_REDIS)
+// const redis = require('redis');
+// const client = redis.createClient(process.env.PORT_REDIS)
 
 module.exports = {
   getBooks: (req, res) => {
@@ -11,7 +11,7 @@ module.exports = {
     console.log(req.query)
     bookModel.getBooks(search, sort)
       .then((result) => {
-        client.setex('getallbooks',3600,JSON.stringify(result))
+        // client.setex('getallbooks',3600,JSON.stringify(result))
         MiscHelper.response(res, result, 200);
       })
       .catch(err => console.log(err));
