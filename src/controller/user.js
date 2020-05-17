@@ -45,7 +45,7 @@ module.exports = {
         password,
         photo: 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png',
         status: 0,
-        role_id: 2,
+        role_id: 1,
       }
       const salt = genSaltSync(10)
       data.password = hashSync(data.password, salt)
