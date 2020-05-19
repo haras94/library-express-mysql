@@ -22,8 +22,8 @@
 ## Installation
 ### Clone
 ```
-$ git clone https://github.com/m-joseph27/Library-API.git
-$ cd library-API
+$ git clone https://github.com/haras94/library-express-mysql.git
+$ cd library-express-mysql
 $ npm install
 ```
 
