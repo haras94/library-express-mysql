@@ -1,4 +1,4 @@
-# library-express-mysql
+# Backend Library
 
 <p align="center">
   <a href="https://nodejs.org/">
